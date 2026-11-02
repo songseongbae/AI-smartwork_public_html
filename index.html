@@ -1,2 +1,1016 @@
-송성배
-ㅇㅇㅇㅇㅇ
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>라스트마일 배송 지연 분석 및 운영 개선 포트폴리오</title>
+  <meta name="description" content="한림대학교 경영학과 학생의 라스트마일 배송 지연 패턴 분석, 머신러닝 예측 및 현장 운영 개선 전략 포트폴리오 웹사이트">
+  <link rel="stylesheet" href="style.css">
+  <!-- Preconnect to Web Fonts -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <div class="brand-icon">📦</div>
+        <div class="brand-text">
+          <h1>라스트마일 배송 지연 분석</h1>
+        </div>
+        <span class="brand-badge">한림대 경영학과</span>
+      </div>
+
+      <nav>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#summary" class="active">요약</a></li>
+          <li><a href="#problem">문제 정의</a></li>
+          <li><a href="#data-audit">데이터 감사</a></li>
+          <li><a href="#eda-dashboard">탐색적 분석</a></li>
+          <li><a href="#ml-models">예측 모델</a></li>
+          <li><a href="#simulator">위험 시뮬레이터</a></li>
+          <li><a href="#recommendations">개선 제안</a></li>
+          <li><a href="#methodology">방법론 & 한계</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-cta">
+        <a href="#simulator" class="btn-nav-demo">⚡ 실시간 예측 체험</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="메뉴 열기">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="summary">
+    <!-- SVG Vector Grid Background Illustration -->
+    <svg class="hero-background-art" viewBox="0 0 1440 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M-100 200 C 300 100, 600 400, 1000 150 C 1200 50, 1400 300, 1600 200" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="8 8" />
+      <path d="M-50 450 C 400 300, 800 550, 1200 350 C 1400 250, 1500 400, 1600 350" stroke="#38bdf8" stroke-width="1.5" />
+      <circle cx="300" cy="100" r="6" fill="#38bdf8" />
+      <circle cx="600" cy="400" r="6" fill="#0ea5e9" />
+      <circle cx="1000" cy="150" r="8" fill="#818cf8" />
+      <circle cx="1200" cy="350" r="6" fill="#38bdf8" />
+    </svg>
+
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-tag">
+          <span>🚀 Business & Logistics Analytics Portfolio</span>
+        </div>
+        <h2 class="hero-title">
+          라스트마일 배송 지연,<br>
+          <span>어디서 왜 발생할까?</span>
+        </h2>
+        <p class="hero-desc">
+          2026년 2분기 20,000건의 실제 배송 표본 데이터를 바탕으로 지역·주거·날씨 조건별 병목 구간을 진단하고, 
+          머신러닝 사전 예측 모델 구축 및 현장 중심의 실행 가능한 운영 개선안을 제안합니다.
+        </p>
+
+        <!-- Author / Identity Box -->
+        <div class="hero-author-box">
+          <div class="author-avatar">HL</div>
+          <div class="author-meta">
+            <h4>한림대학교 경영학과</h4>
+            <p>데이터 분석 & 물류 최적화 포트폴리오 | Python · Scikit-Learn · Web Dashboard</p>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <a href="#eda-dashboard" class="btn-primary">
+            <span>📊 대시보드 분석 보기</span>
+          </a>
+          <a href="#simulator" class="btn-secondary">
+            <span>🎯 위험 점수 시뮬레이터</span>
+          </a>
+          <a href="#recommendations" class="btn-secondary">
+            <span>💡 4대 운영 개선 전략</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero KPI Panel (Exact Figures from MD File) -->
+      <div class="hero-kpi-panel">
+        <div class="hero-kpi-card">
+          <div class="kpi-label">전체 분석 표본 수</div>
+          <div class="kpi-value">20,000<span style="font-size:1.1rem;font-weight:600;">건</span></div>
+          <div class="kpi-sub">2026.04.01 ~ 06.30 (Q2 표본)</div>
+        </div>
+
+        <div class="hero-kpi-card delayed">
+          <div class="kpi-label">전체 배송 지연율</div>
+          <div class="kpi-value" style="color:#f87171;">10.6<span style="font-size:1.1rem;font-weight:600;">%</span></div>
+          <div class="kpi-sub">총 2,115건 지연 발생 (평균 34.8분)</div>
+        </div>
+
+        <div class="hero-kpi-card cs">
+          <div class="kpi-label">CS 불만 접수율</div>
+          <div class="kpi-value" style="color:#fbbf24;">7.0<span style="font-size:1.1rem;font-weight:600;">%</span></div>
+          <div class="kpi-sub">총 1,400건 (지연 시 불만율 4.8배 급증)</div>
+        </div>
+
+        <div class="hero-kpi-card rating">
+          <div class="kpi-label">평균 고객 평점</div>
+          <div class="kpi-value" style="color:#34d399;">4.53<span style="font-size:1.1rem;font-weight:600;">/5</span></div>
+          <div class="kpi-sub">정시 배송 4.71점 vs 지연 배송 3.02점</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Body -->
+  <main class="main-content">
+
+    <!-- Section B. 문제 정의 -->
+    <section class="section-block" id="problem">
+      <div class="section-header">
+        <span class="section-header-tag">Section B · Problem Definition</span>
+        <h2 class="section-title">라스트마일 배송 지연 문제의 정의</h2>
+        <p class="section-subtitle">
+          고객에게 약속한 시간보다 늦는 배송은 고객 신뢰 하락과 CS 비용 증가를 초래합니다. 
+          어떤 물리적 환경과 기상, 경로 조건이 지연을 유발하는지 실증적으로 규명합니다.
+        </p>
+      </div>
+
+      <div class="problem-grid">
+        <div class="card problem-card">
+          <h3><span>🎯</span> 연구 질문 1</h3>
+          <p>
+            <strong>환경적 요인의 영향력:</strong> 지역 유형(도서산간, 도심 등), 주거 형태(아파트, 빌라 등), 날씨 조건이 배송 지연율에 미치는 실질적인 차이는 어느 정도인가?
+          </p>
+        </div>
+
+        <div class="card problem-card">
+          <h3><span>⏱️</span> 연구 질문 2</h3>
+          <p>
+            <strong>사전 예측 가능성:</strong> 배송이 출발하기 전 단계에서 직전 배송지 거리, 당일 배송 물량, 기사 경력 등의 사전 변수만으로 고위험 배송 건을 사전에 탐지할 수 있는가?
+          </p>
+        </div>
+
+        <div class="card problem-card">
+          <h3><span>💡</span> 연구 질문 3</h3>
+          <p>
+            <strong>실행 가능한 운영 개선:</strong> 한정된 배송 인력과 차량 자원을 고려할 때, 병목 구간을 해소하고 정시성을 회복할 수 있는 구체적인 물류 운영 개선안은 무엇인가?
+          </p>
+        </div>
+      </div>
+
+      <!-- Stakeholder Matrix -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.5rem;">👥 이해관계자별 핵심 관심사와 가치</h3>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1rem;">
+          라스트마일 배송은 세 주체의 상호작용 속에서 완성되며, 지연 해소는 모든 이해관계자에게 직접적인 효용을 제공합니다.
+        </p>
+
+        <div class="stakeholder-matrix">
+          <div class="stakeholder-item">
+            <h4>고객 (Customer)</h4>
+            <p>신선식품 변질 우려 해소, 약속된 배송 시간 준수, 지연 발생 시 선제적인 알림 및 투명한 예상 도착 시각 안내를 요구합니다.</p>
+          </div>
+          <div class="stakeholder-item">
+            <h4>배송 기사 (Courier)</h4>
+            <p>공동현관 비밀번호 불일치 및 대기 시간 최소화, 과도한 배송지 할당 완화, 악천후 및 산간 지역 안전 배송 여유 확보를 필요로 합니다.</p>
+          </div>
+          <div class="stakeholder-item">
+            <h4>물류 운영사 (Logistics Operator)</h4>
+            <p>CS 불만 인입 최소화, 라우팅 최적화를 통한 주행거리 단축, 권역별 차량·인력 자원의 효율적 재배치를 통해 비용을 절감하고자 합니다.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section C. 데이터 개요와 품질 감사 -->
+    <section class="section-block" id="data-audit">
+      <div class="section-header">
+        <span class="section-header-tag">Section C · Data Audit & Quality</span>
+        <h2 class="section-title">데이터 개요 및 품질 검증 (Data Audit)</h2>
+        <p class="section-subtitle">
+          2026년 2분기 20,000행의 배송 표본을 면밀히 검사하고, 모델링 과정에서 발생할 수 있는 데이터 누수(Data Leakage)를 사전에 차단했습니다.
+        </p>
+      </div>
+
+      <!-- Critical Notice Banner for Leakage Variables -->
+      <div class="callout-banner danger">
+        <div class="callout-icon">⚠️</div>
+        <div>
+          <strong>사전 예측 모델에서의 사후 변수(Data Leakage) 격리 원칙:</strong><br>
+          <code>delay_minutes</code>(지연 시간), <code>customer_rating</code>(고객 평점), <code>cs_complaint</code>(CS 불만) 변수는 배송 지연이 발생한 뒤에만 측정되는 결과값입니다. 
+          사전 예측 시점에 알 수 없는 이 변수들을 학습 특성에 포함하면 치명적인 데이터 누수와 과도하게 낙관적인 가짜 성능이 발생하므로 모델 학습 입력에서 엄격히 배제했습니다.
+          <code>order_id</code> 역시 단순 식별자이므로 제외했습니다.
+        </div>
+      </div>
+
+      <div class="callout-banner info">
+        <div class="callout-icon">ℹ️</div>
+        <div>
+          <strong>과제용 가상 데이터셋 안내:</strong> 본 프로젝트에 사용된 <code>P2_lastmile_delivery (2).csv</code>는 교육 및 문제해결(PBL)용으로 정교하게 설계된 가상 시뮬레이션 데이터셋입니다. 
+          도출된 수치와 통계적 상관관계는 해당 표본 데이터에 기반한 결과이며 실제 특정 이커머스 기업의 확정 수치가 아님을 밝힙니다.
+        </div>
+      </div>
+
+      <!-- Audit Stats Grid -->
+      <div class="audit-stats-grid">
+        <div class="audit-stat-box">
+          <div class="val">20,000</div>
+          <div class="lbl">총 행 수 (배송 건수)</div>
+        </div>
+        <div class="audit-stat-box">
+          <div class="val">19</div>
+          <div class="lbl">총 변수 수 (열)</div>
+        </div>
+        <div class="audit-stat-box">
+          <div class="val" style="color:var(--status-safe);">0 건 (0%)</div>
+          <div class="lbl">결측치 (Missing Values)</div>
+        </div>
+        <div class="audit-stat-box">
+          <div class="val" style="color:var(--status-safe);">0 건 (0%)</div>
+          <div class="lbl">중복 order_id</div>
+        </div>
+      </div>
+
+      <!-- Interactive Data Dictionary Table -->
+      <div class="card">
+        <div class="table-controls">
+          <div>
+            <h3 style="font-size: 1.1rem; margin-bottom: 0.2rem;">📖 19개 전체 변수 데이터 사전 (Data Dictionary)</h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted);">변수명이나 설명으로 실시간 검색하고 역할별로 필터링할 수 있습니다.</p>
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="dictSearchInput" class="search-input" placeholder="🔍 변수명, 한글명 검색...">
+            <div class="filter-badge-group">
+              <button class="btn-filter-pill active" data-role="all">전체 (19)</button>
+              <button class="btn-filter-pill" data-role="feature">사전 특성 (15)</button>
+              <button class="btn-filter-pill" data-role="leakage">사후 누수 변수 (3)</button>
+              <button class="btn-filter-pill" data-role="target">목표 변수 (1)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table" id="dictionaryTable">
+            <thead>
+              <tr>
+                <th>변수명 (Column)</th>
+                <th>한글 명칭</th>
+                <th>데이터 타입</th>
+                <th>모델링 역할</th>
+                <th>상세 설명 및 범주 구성</th>
+              </tr>
+            </thead>
+            <tbody id="dictionaryTableBody">
+              <!-- Dynamically populated by app.js from LASTMILE_DATA.dictionary -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section D. 탐색적 분석 대시보드 (Interactive EDA Dashboard) -->
+    <section class="section-block" id="eda-dashboard">
+      <div class="section-header">
+        <span class="section-header-tag">Section D · Exploratory Data Analysis</span>
+        <h2 class="section-title">탐색적 분석 대시보드 (EDA Dashboard)</h2>
+        <p class="section-subtitle">
+          지역, 주거 형태, 기상, 시간대 등 다차원 필터를 조정하여 조건별 배송 건수, 지연율, CS 불만율의 변화를 실시간으로 비교 분석합니다.
+        </p>
+      </div>
+
+      <!-- Warning Callout on Sample Size -->
+      <div class="callout-banner warning">
+        <div class="callout-icon">💡</div>
+        <div>
+          <strong>표본 크기(Sample Size)에 대한 해석 유의사항:</strong> 
+          특정 복합 필터를 적용할 경우 세부 그룹의 표본 수가 적어질 수 있습니다. 
+          표본 크기가 작은 그룹(예: 도서산간 + 폭설 + 야간 배송 등)의 지연율 변동을 과도하게 일반화하거나 단일 원인으로 단정하지 않도록 
+          각 차트와 카드에 표본 수(N)를 함께 표기했습니다.
+        </div>
+      </div>
+
+      <div class="dashboard-layout">
+        <!-- Filter Sidebar -->
+        <aside class="filter-sidebar">
+          <h3>
+            <span>🎛️ 다차원 분석 필터</span>
+            <button class="btn-reset-filter" id="btnResetFilters">초기화 ↺</button>
+          </h3>
+
+          <div class="filter-group">
+            <label for="filterRegion">지역 유형 (Region)</label>
+            <select id="filterRegion" class="filter-select">
+              <option value="all">전체 지역 (6개 권역)</option>
+              <option value="도서산간">도서산간 (지연율 35.5%)</option>
+              <option value="읍면농촌">읍면농촌 (지연율 19.7%)</option>
+              <option value="지방중소도시">지방중소도시 (지연율 12.1%)</option>
+              <option value="지방광역시">지방광역시 (지연율 8.4%)</option>
+              <option value="서울도심">서울도심 (지연율 8.3%)</option>
+              <option value="수도권신도시">수도권신도시 (지연율 7.4%)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterHousing">주거 형태 (Housing)</label>
+            <select id="filterHousing" class="filter-select">
+              <option value="all">전체 주거 형태 (5종)</option>
+              <option value="아파트">아파트 (지연율 12.2%)</option>
+              <option value="빌라·다세대">빌라·다세대 (지연율 10.2%)</option>
+              <option value="상가">상가 (지연율 10.1%)</option>
+              <option value="단독주택">단독주택 (지연율 9.3%)</option>
+              <option value="오피스텔">오피스텔 (지연율 6.3%)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterWeather">날씨 상태 (Weather)</label>
+            <select id="filterWeather" class="filter-select">
+              <option value="all">전체 날씨 (6종)</option>
+              <option value="폭우">폭우 (지연율 20.9%)</option>
+              <option value="눈">눈 (지연율 20.2%)</option>
+              <option value="비">비 (지연율 9.9%)</option>
+              <option value="맑음">맑음 (지연율 9.7%)</option>
+              <option value="흐림">흐림 (지연율 9.3%)</option>
+              <option value="폭염">폭염 (지연율 8.9%)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterTimeSlot">배송 시간대 (Time Slot)</label>
+            <select id="filterTimeSlot" class="filter-select">
+              <option value="all">전체 시간대</option>
+              <option value="오전">오전 (08~12시)</option>
+              <option value="오후">오후 (12~18시)</option>
+              <option value="야간/새벽">야간/새벽 (18~22시)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterDriver">기사 고용 형태 (Driver)</label>
+            <select id="filterDriver" class="filter-select">
+              <option value="all">전체 기사</option>
+              <option value="전담 정규직">전담 정규직 (캠프)</option>
+              <option value="파트너/위탁">파트너/위탁 (플렉스)</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filterFresh">신선식품 여부 (Fresh)</label>
+            <select id="filterFresh" class="filter-select">
+              <option value="all">전체 품목</option>
+              <option value="true">신선식품 (냉장/냉동)</option>
+              <option value="false">일반 공산품</option>
+            </select>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+            * 필터 변경 시 우측의 실시간 집계 지표와 차트 분포가 즉시 재계산됩니다.
+          </div>
+        </aside>
+
+        <!-- Dashboard Main Display -->
+        <div class="dashboard-main">
+          <!-- Dynamic KPI Ribbon -->
+          <div class="eda-kpi-ribbon">
+            <div class="eda-kpi-card">
+              <span class="label">선택 조건 배송 건수 (N)</span>
+              <div class="number" id="kpiSampleCount">20,000</div>
+              <span class="sub-meta" id="kpiSampleShare">전체 20,000건 중 100.0%</span>
+            </div>
+
+            <div class="eda-kpi-card" style="border-left: 4px solid var(--status-danger);">
+              <span class="label">조건부 배송 지연율</span>
+              <div class="number" style="color:var(--status-danger);" id="kpiDelayRate">10.6%</div>
+              <span class="sub-meta" id="kpiDelayedCount">지연 2,115건 / 정시 17,885건</span>
+            </div>
+
+            <div class="eda-kpi-card" style="border-left: 4px solid var(--primary);">
+              <span class="label">평균 지연 시간 (지연건)</span>
+              <div class="number" style="color:var(--primary);" id="kpiAvgDelayMins">34.8분</div>
+              <span class="sub-meta">정시 배송 건 제외 (지연 도착 기준)</span>
+            </div>
+
+            <div class="eda-kpi-card" style="border-left: 4px solid var(--status-warning);">
+              <span class="label">CS 불만 인입률</span>
+              <div class="number" style="color:var(--status-warning);" id="kpiCsRate">7.0%</div>
+              <span class="sub-meta" id="kpiCsCount">총 1,400건 접수</span>
+            </div>
+          </div>
+
+          <!-- 4 Interactive SVG Visualizations -->
+          <div class="charts-grid-2col">
+            <!-- Chart 1: Region Delay Rates -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h4>📍 지역별 지연율 & 배송 비중</h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">도서산간 35.5% vs 신도시 7.4%</span>
+              </div>
+              <div class="chart-body" id="regionChartContainer">
+                <svg id="svgRegionChart" class="svg-chart"></svg>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.5rem;">
+                * 도서산간과 읍면농촌의 지연율이 수도권 대비 최대 4.8배에 달해 권역별 주행거리 및 도로망 한계가 뚜렷합니다.
+              </p>
+            </div>
+
+            <!-- Chart 2: Weather Delay Rates -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h4>🌦️ 기상 조건별 지연율 비교</h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">악천후(폭우·눈) 시 지연율 2배 급증</span>
+              </div>
+              <div class="chart-body" id="weatherChartContainer">
+                <svg id="svgWeatherChart" class="svg-chart"></svg>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.5rem;">
+                * 폭우(20.9%)와 눈(20.2%) 발생 시 주행 감속 및 시야 제한으로 인해 평시(9.7%) 대비 지연율이 2배 이상 치솟습니다.
+              </p>
+            </div>
+
+            <!-- Chart 3: Housing Type Delay Rates -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h4>🏢 주거 형태별 지연율 비교</h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">아파트 12.2% vs 오피스텔 6.3%</span>
+              </div>
+              <div class="chart-body" id="housingChartContainer">
+                <svg id="svgHousingChart" class="svg-chart"></svg>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.5rem;">
+                * 아파트는 대단지 차량 진입 제한 및 승강기 대기로 지연율이 높고, 오피스텔은 무인택배함과 수직 밀집으로 최저입니다.
+              </p>
+            </div>
+
+            <!-- Chart 4: 13-Week Time Series Trend -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h4>📈 2026 Q2 주차별 지연율 추이 (13주)</h4>
+                <span style="font-size:0.75rem; color:var(--text-muted);">5월 연휴 및 6월 장마철 스파이크</span>
+              </div>
+              <div class="chart-body" id="trendChartContainer">
+                <svg id="svgTrendChart" class="svg-chart"></svg>
+              </div>
+              <p style="font-size:0.78rem; color:var(--text-muted); margin-top:0.5rem;">
+                * 5월 초 연휴 물량 증가(13.6%)와 6월 하순 장마 전선 유입(15.4%) 시점에 배송 지연 스파이크가 관측됩니다.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section E. 예측 모델 및 설명 -->
+    <section class="section-block" id="ml-models">
+      <div class="section-header">
+        <span class="section-header-tag">Section E · Predictive Modeling & SHAP</span>
+        <h2 class="section-title">배송 지연 예측 머신러닝 모델 & 특성 해석</h2>
+        <p class="section-subtitle">
+          과거 시점(4~5월)으로 학습하고 미래 시점(6월)으로 검증하는 시간 분할(Time-based Split)을 적용하여 4개 모델을 비교 평가했습니다. 
+          불균형 데이터(지연율 10.6%) 특성에 맞춰 ROC-AUC, PR-AUC, F1 지표를 다각도로 검토했습니다.
+        </p>
+      </div>
+
+      <!-- Model Comparison Cards Table -->
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem; flex-wrap:wrap; gap:1rem;">
+          <div>
+            <h3 style="font-size: 1.15rem;">📊 모델별 성능 벤치마크 (2026.06월 Test Set 6,600건 기준)</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">
+              사후 누수 변수를 배제하고 출발 전 15개 특성만으로 평가한 최종 벤치마크 결과입니다.
+            </p>
+          </div>
+          <span style="font-size:0.8rem; background:var(--primary-light); color:var(--primary); padding:0.3rem 0.75rem; border-radius:var(--radius-full); font-weight:700;">
+            최적 선정: LightGBM
+          </span>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>모델명</th>
+                <th>유형</th>
+                <th>ROC-AUC</th>
+                <th>PR-AUC</th>
+                <th>Precision</th>
+                <th>Recall</th>
+                <th>F1-Score</th>
+                <th>정확도 (Acc)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>기준선 (Baseline)</strong></td>
+                <td>최빈 클래스 (All On-Time)</td>
+                <td>0.500</td>
+                <td>0.106</td>
+                <td>0.000</td>
+                <td>0.000</td>
+                <td>0.000</td>
+                <td>89.4%</td>
+              </tr>
+              <tr>
+                <td><strong>로지스틱 회귀</strong></td>
+                <td>L2 정규화 선형 분류</td>
+                <td>0.812</td>
+                <td>0.524</td>
+                <td>0.468</td>
+                <td>0.615</td>
+                <td>0.531</td>
+                <td>88.7%</td>
+              </tr>
+              <tr>
+                <td><strong>랜덤 포레스트</strong></td>
+                <td>배깅 앙상블 트리 (100 Trees)</td>
+                <td>0.835</td>
+                <td>0.589</td>
+                <td>0.512</td>
+                <td>0.648</td>
+                <td>0.572</td>
+                <td>89.9%</td>
+              </tr>
+              <tr style="background:#f0f9ff; font-weight:700;">
+                <td><strong>LightGBM (최종 채택) 🏆</strong></td>
+                <td>그레이디언트 부스팅 트리</td>
+                <td style="color:var(--primary);">0.842</td>
+                <td style="color:var(--primary);">0.618</td>
+                <td>0.534</td>
+                <td>0.682</td>
+                <td style="color:var(--primary);">0.599</td>
+                <td>90.6%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Threshold Slider Simulator Box -->
+      <div class="threshold-simulator-box">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.3rem;">🎚️ 분류 확률 임계값(Threshold) 시뮬레이터 & Trade-off 분석</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6;">
+          기본 임계값(0.50)은 10.6%의 불균형 데이터에서 지연을 너무 보수적으로만 예측(Recall 23.0%)합니다. 
+          슬라이더를 움직여 임계값을 낮출 때 <strong>지연을 얼마나 더 많이 조기에 포착(재현율 상승)</strong>할 수 있는지, 
+          그리고 <strong>오경보(False Alarm)가 어떻게 늘어나는지</strong> 실시간으로 확인해보세요.
+        </p>
+
+        <div class="threshold-slider-container">
+          <span style="font-weight:700; font-size:0.9rem; color:var(--text-main);">임계값 조정:</span>
+          <input type="range" id="thresholdSlider" class="custom-range" min="0.10" max="0.50" step="0.05" value="0.25">
+          <div class="slider-val-badge" id="sliderValBadge">0.25</div>
+          <span style="font-size:0.85rem; color:var(--primary); font-weight:700;" id="sliderActionBadge">F1 최대화 구간 (기본 권장)</span>
+        </div>
+
+        <!-- Confusion Matrix Grid -->
+        <div class="confusion-matrix-grid">
+          <div class="cm-cell tp">
+            <span class="cm-title">True Positive (정답 지연 포착) ✅</span>
+            <span class="cm-count" id="cmTp" style="color:#059669;">477건</span>
+            <span class="cm-desc">실제 지연 배송을 사전에 정확히 탐지 (선제 알림 및 조치 가능)</span>
+          </div>
+          <div class="cm-cell fp">
+            <span class="cm-title">False Positive (오경보) ⚠️</span>
+            <span class="cm-count" id="cmFp" style="color:#d97706;">416건</span>
+            <span class="cm-desc">정시 배송인데 지연 위험으로 오분류 (불필요한 확인 비용 발생)</span>
+          </div>
+          <div class="cm-cell fn">
+            <span class="cm-title">False Negative (미탐 / 놓친 지연) ❌</span>
+            <span class="cm-count" id="cmFn" style="color:#dc2626;">223건</span>
+            <span class="cm-desc">지연 배송인데 정상으로 분류되어 사전 조치 실패 (고객 불만 야기)</span>
+          </div>
+          <div class="cm-cell tn">
+            <span class="cm-title">True Negative (정상 배송 통과) 🛡️</span>
+            <span class="cm-count" id="cmTn" style="color:#475569;">5,484건</span>
+            <span class="cm-desc">정상 배송 건을 올바르게 정상으로 분류</span>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:1.25rem; background:#f8fafc; padding:0.85rem 1.2rem; border-radius:var(--radius-md); font-size:0.88rem; flex-wrap:wrap; gap:0.5rem;">
+          <div>정밀도 (Precision): <strong id="simPrecision" style="color:var(--text-main);">53.4%</strong></div>
+          <div>재현율 (Recall): <strong id="simRecall" style="color:var(--status-safe);">68.1%</strong></div>
+          <div>F1-Score: <strong id="simF1" style="color:var(--primary);">0.599</strong></div>
+          <div>지연 포착률: <strong id="simCaptureRate" style="color:#0369a1;">전체 지연 중 68.1% 포착</strong></div>
+        </div>
+      </div>
+
+      <!-- SHAP Global Feature Importance List -->
+      <div class="card" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.15rem; margin-bottom: 0.3rem;">🧠 SHAP 글로벌 특성 영향도 (Global Feature Importance)</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          머신러닝 모델의 개별 예측에 기여한 평균적인 절대값 영향(|SHAP value|)과 위험 증가(+) 및 감소(-) 방향을 시각화했습니다.
+        </p>
+
+        <div class="shap-list" id="shapListContainer">
+          <!-- Dynamically populated from LASTMILE_DATA.shapFactors -->
+        </div>
+
+        <div class="callout-banner info" style="margin-top:1.5rem; margin-bottom:0;">
+          <div class="callout-icon">📌</div>
+          <div>
+            <strong>모델 해석의 한계 (상관성과 인과성의 엄격한 구분):</strong><br>
+            SHAP 값이 높다는 것은 모델이 특정 변수를 지연 확률 계산에 비중 있게 활용했다는 통계적 연관성을 의미할 뿐, 
+            해당 변수가 지연의 유일한 직접적 원인임을 증명하는 것은 아닙니다. 
+            예를 들어 '아파트'의 높은 지연 기여는 아파트 건물 자체의 결함이 아니라 승강기 호출 대기, 단지 내 도보 거리, 방문증 발급 등 
+            측정되지 않은 복합 매개 요인의 결과일 수 있습니다.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section F. 지연 위험 체험 시뮬레이터 -->
+    <section class="section-block" id="simulator">
+      <div class="section-header">
+        <span class="section-header-tag">Section F · Interactive Simulator</span>
+        <h2 class="section-title">실시간 배송 지연 위험 점수 체험 (Simulator)</h2>
+        <p class="section-subtitle">
+          임의의 주문 배송 조건을 직접 설정해보세요. 브라우저 내에 탑재된 로지스틱 회귀 모델이 실시간으로 지연 확률과 위험 요인을 진단합니다.
+        </p>
+      </div>
+
+      <div class="sim-container">
+        <!-- Input Controls -->
+        <div class="sim-controls-panel">
+          <!-- Quick Presets -->
+          <div class="sim-presets-bar">
+            <span style="font-size: 0.8rem; font-weight:700; color:var(--text-secondary); margin-right:0.3rem;">⚡ 빠른 시나리오 체험:</span>
+            <button class="preset-chip" id="presetDangerous">⛈️ 도서산간 폭우 신선식품 (고위험)</button>
+            <button class="preset-chip" id="presetApartment">🏢 도심 아파트 야간 배송 (주의)</button>
+            <button class="preset-chip" id="presetSafe">☀️ 신도시 오피스텔 맑은 날 (안전)</button>
+          </div>
+
+          <div class="sim-grid-fields">
+            <div class="field-item">
+              <label for="simRegion">배송 지역 (Region)</label>
+              <select id="simRegion" class="field-input-box">
+                <option value="도서산간">도서산간</option>
+                <option value="읍면농촌">읍면농촌</option>
+                <option value="지방중소도시">지방중소도시</option>
+                <option value="지방광역시">지방광역시</option>
+                <option value="서울도심" selected>서울도심</option>
+                <option value="수도권신도시">수도권신도시</option>
+              </select>
+            </div>
+
+            <div class="field-item">
+              <label for="simHousing">주거 형태 (Housing)</label>
+              <select id="simHousing" class="field-input-box">
+                <option value="아파트" selected>아파트</option>
+                <option value="빌라·다세대">빌라·다세대</option>
+                <option value="상가">상가</option>
+                <option value="단독주택">단독주택</option>
+                <option value="오피스텔">오피스텔</option>
+              </select>
+            </div>
+
+            <div class="field-item">
+              <label for="simWeather">기상 상태 (Weather)</label>
+              <select id="simWeather" class="field-input-box">
+                <option value="맑음" selected>맑음</option>
+                <option value="비">비 (일반 우천)</option>
+                <option value="폭우">폭우 (강우량 집중)</option>
+                <option value="눈">눈 (강설/결빙)</option>
+                <option value="흐림">흐림</option>
+                <option value="폭염">폭염</option>
+              </select>
+            </div>
+
+            <div class="field-item">
+              <label for="simTimeSlot">배송 시간대 (Time Slot)</label>
+              <select id="simTimeSlot" class="field-input-box">
+                <option value="오전">오전 (08~12시)</option>
+                <option value="오후" selected>오후 (12~18시)</option>
+                <option value="야간/새벽">야간/새벽 (18~22시)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Numeric Sliders -->
+          <div style="display:flex; flex-direction:column; gap:1.1rem; margin-top:0.5rem;">
+            <div class="field-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label for="simDriverExp" style="margin:0;">기사 누적 경력: <strong id="lblDriverExp" style="color:var(--primary);">2.5년 (30개월)</strong></label>
+                <span style="font-size:0.75rem; color:var(--text-muted);">숙련될수록 지연 억제</span>
+              </div>
+              <input type="range" id="simDriverExp" class="custom-range" min="0.2" max="8.0" step="0.2" value="2.5">
+            </div>
+
+            <div class="field-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label for="simDailyDest" style="margin:0;">당일 할당 배송지 수: <strong id="lblDailyDest" style="color:var(--primary);">110가구</strong></label>
+                <span style="font-size:0.75rem; color:var(--text-muted);">130가구 초과 시 급격한 압박</span>
+              </div>
+              <input type="range" id="simDailyDest" class="custom-range" min="40" max="200" step="5" value="110">
+            </div>
+
+            <div class="field-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label for="simDistance" style="margin:0;">직전 배송지와의 주행 거리: <strong id="lblDistance" style="color:var(--primary);">1.8 km</strong></label>
+                <span style="font-size:0.75rem; color:var(--text-muted);">3km 이상 시 추가 이동 소요</span>
+              </div>
+              <input type="range" id="simDistance" class="custom-range" min="0.2" max="15.0" step="0.2" value="1.8">
+            </div>
+
+            <div class="field-item">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.3rem;">
+                <label for="simWeight" style="margin:0;">배송 박스 중량: <strong id="lblWeight" style="color:var(--primary);">6.5 kg</strong></label>
+                <span style="font-size:0.75rem; color:var(--text-muted);">중량물 운반 시 육체적 지체</span>
+              </div>
+              <input type="range" id="simWeight" class="custom-range" min="0.5" max="30.0" step="0.5" value="6.5">
+            </div>
+          </div>
+
+          <!-- Binary Toggles -->
+          <div class="toggle-grid">
+            <div class="toggle-card" id="cardIsFresh">
+              <span class="toggle-label">🥩 신선식품 (냉장/냉동)</span>
+              <input type="checkbox" id="simIsFresh">
+            </div>
+
+            <div class="toggle-card checked" id="cardHasElevator">
+              <span class="toggle-label">🛗 엘리베이터 설치됨</span>
+              <input type="checkbox" id="simHasElevator" checked>
+            </div>
+
+            <div class="toggle-card" id="cardHasEntranceLock">
+              <span class="toggle-label">🔐 공동현관 비밀번호 잠금</span>
+              <input type="checkbox" id="simHasEntranceLock">
+            </div>
+
+            <div class="toggle-card" id="cardIsMonday">
+              <span class="toggle-label">📅 월요일 물량 피크 여부</span>
+              <input type="checkbox" id="simIsMonday">
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Output Gauge Panel -->
+        <div class="sim-result-panel">
+          <h4 style="font-size:1.05rem; font-weight:800; color:#cbd5e1;">추정 배송 지연 위험 점수</h4>
+
+          <!-- Circular SVG Gauge -->
+          <div class="sim-gauge-wrapper">
+            <svg class="gauge-svg" viewBox="0 0 200 120">
+              <path class="gauge-track" d="M 20 100 A 80 80 0 0 1 180 100" />
+              <path class="gauge-fill" id="gaugeFillPath" d="M 20 100 A 80 80 0 0 1 180 100" />
+            </svg>
+            <div class="gauge-center-text">
+              <span class="gauge-score" id="gaugeScoreText">14.8</span>
+              <span class="gauge-unit">지연 위험률 (%)</span>
+            </div>
+          </div>
+
+          <!-- Status Level Badge -->
+          <div class="sim-status-badge safe" id="simStatusBadge">
+            <span id="simStatusIcon">🛡️</span>
+            <span id="simStatusText">안전 (정상 정시 배송 예상)</span>
+          </div>
+
+          <!-- Top 3 Contributing Factors -->
+          <div class="top-contributors-box">
+            <h5>상위 위험 기여 요인 Top 3</h5>
+            <div id="topContributorsList">
+              <!-- Dynamically populated by app.js -->
+            </div>
+          </div>
+
+          <!-- Recommended Operational Action -->
+          <div class="recommended-action-box" id="simActionBox">
+            💡 <strong>운영 권장 조치:</strong> 현재 조건은 지연 위험이 낮습니다. 통상 배송 라우트를 유지하고 표준 배송 절차를 준수하세요.
+          </div>
+
+          <p style="font-size:0.7rem; color:#64748b; margin-top:1.2rem; line-height:1.4;">
+            * 이 결과는 과제용 가상 표본 데이터로 학습된 로지스틱 회귀 모델의 실시간 시연이며, 실제 주문의 운영 판단이나 법적 보증에 사용할 수 없습니다.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section G. 운영 개선 제안 -->
+    <section class="section-block" id="recommendations">
+      <div class="section-header">
+        <span class="section-header-tag">Section G · Operational Recommendations</span>
+        <h2 class="section-title">데이터 기반 라스트마일 4대 현장 운영 개선안</h2>
+        <p class="section-subtitle">
+          분석된 지연 요인과 머신러닝 피처 중요도를 바탕으로, 과도한 비용을 들이지 않고 현장에 바로 적용할 수 있는 구체적인 개선안을 제시합니다.
+        </p>
+      </div>
+
+      <div class="strategy-grid">
+        <!-- Strategy 1 -->
+        <div class="strategy-card">
+          <div class="strategy-card-header">
+            <div class="strategy-badge-num">1</div>
+            <h3>도서산간·악천후 권역 탄력적 SLA & 버퍼 타임</h3>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.65;">
+            도서산간(35.5%) 및 폭우/폭설(20%+) 시 물리적 이동 한계로 지연이 구조화됩니다. 
+            해당 권역 및 기상 특보 발령 시 약속 배송 시각(SLA)을 1~2시간 탄력적으로 유예하고, 
+            인접 캠프 간 기동 지원조를 파견하여 기사의 과속 사고를 방지합니다.
+          </p>
+          <div class="strategy-meta-block">
+            <div class="strategy-meta-row">
+              <span class="label">데이터 근거</span>
+              <span class="val">도서산간 평균 이동거리 9.8km (도심의 8배), 악천후 지연율 20% 초과</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">성과 지표</span>
+              <span class="val">산간 지역 CS 불만율 40% 감축 및 악천후 기사 안전사고 0건 달성</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">운영상 제약</span>
+              <span class="val">고객 사전 동의 체계 필요, 유예 시간 초과 시 대체 배송망 협약</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy 2 -->
+        <div class="strategy-card">
+          <div class="strategy-card-header">
+            <div class="strategy-badge-num">2</div>
+            <h3>공동현관 출입 메타데이터 사전 표준화</h3>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.65;">
+            공동현관 잠금은 세대당 3~7분의 불필요한 대기를 유발합니다. 
+            주문 앱 결제 단계에서 공동현관 비밀번호 필수 입력 검증 및 스마트패스/무인경비 시스템과의 사전 API 연동을 구축하여 
+            진입 병목을 원천 제거합니다.
+          </p>
+          <div class="strategy-meta-block">
+            <div class="strategy-meta-row">
+              <span class="label">데이터 근거</span>
+              <span class="val">SHAP 중요도 4위 (공동현관 출입 제한 시 지연 확률 +39% 상승)</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">성과 지표</span>
+              <span class="val">아파트·다세대 가구당 현장 체류 시간 평균 2.5분 단축</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">운영상 제약</span>
+              <span class="val">개인정보보호법에 따른 출입 비밀번호 암호화 저장 및 배송 후 폐기 규정 준수</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy 3 -->
+        <div class="strategy-card">
+          <div class="strategy-card-header">
+            <div class="strategy-badge-num">3</div>
+            <h3>기사 숙련도별 라우팅 차등 배정 & 물량 상한제</h3>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.65;">
+            초임 기사(경력 6개월 미만)에게 복잡한 골목 상가나 엘리베이터 없는 빌라 밀집 지역을 배정하면 급격한 누적 지연이 발생합니다. 
+            기사 숙련도에 따라 권역 난이도를 차등 매칭하고, 당일 배송지를 최대 130가구로 상한 제한합니다.
+          </p>
+          <div class="strategy-meta-block">
+            <div class="strategy-meta-row">
+              <span class="label">데이터 근거</span>
+              <span class="val">기사 경력(음의 상관 -0.17 SHAP) 및 일 140건 초과 시 지연율 급증</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">성과 지표</span>
+              <span class="val">신규 기사의 조기 퇴사율 감소 및 주간 배송 완료율 균일화</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">운영상 제약</span>
+              <span class="val">피크 시즌 물량 급증 시 탄력적 단기 파트너(플렉스) 수급 비용 고려 필요</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strategy 4 -->
+        <div class="strategy-card">
+          <div class="strategy-card-header">
+            <div class="strategy-badge-num">4</div>
+            <h3>신선식품 콜드체인 우선 큐 & 선제적 지연 알림</h3>
+          </div>
+          <p style="font-size:0.88rem; color:var(--text-secondary); line-height:1.65;">
+            신선식품은 지연 시 폐기 위험과 즉각적인 CS 클레임으로 직결됩니다. 
+            동일 코호트 내에서 신선식품을 1순위 방문 지점으로 동선화하고, 
+            머신러닝 모델이 지연 위험도 35% 이상을 감지하면 고객에게 30분 전 자동 안심 푸시 알림을 발송합니다.
+          </p>
+          <div class="strategy-meta-block">
+            <div class="strategy-meta-row">
+              <span class="label">데이터 근거</span>
+              <span class="val">신선식품 지연 시 CS 인입률 24.5%로 일반 상품(5.2%) 대비 4.7배</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">성과 지표</span>
+              <span class="val">신선식품 변질 보상액 50% 절감 및 지연 시 고객 평점 0.8점 방어</span>
+            </div>
+            <div class="strategy-meta-row">
+              <span class="label">운영상 제약</span>
+              <span class="val">우선순위 강제 조정으로 인한 전체 동선 거리 미세 증가(약 4~6%) 감내</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section H. 방법론, 한계 및 회고 -->
+    <section class="section-block" id="methodology">
+      <div class="section-header">
+        <span class="section-header-tag">Section H · Methodology & Limitations</span>
+        <h2 class="section-title">분석 절차, 한계 및 프로젝트 회고</h2>
+        <p class="section-subtitle">
+          CRISP-DM 표준 프로세스를 기반으로 분석을 수행했으며, 데이터의 출처 한계와 인과관계 해석의 경계를 분명히 서술합니다.
+        </p>
+      </div>
+
+      <div class="methodology-grid">
+        <!-- Methodology Steps Timeline -->
+        <div class="card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">🔄 프로젝트 수행 절차 (CRISP-DM)</h3>
+          
+          <div class="timeline-steps">
+            <div class="timeline-step-item">
+              <h4>1. 비즈니스 이해 & 문제 정의</h4>
+              <p>라스트마일 배송 지연의 경영학적 손실 비용(CS 불만, 고객 이탈)을 정의하고 연구 질문 3가지 수립</p>
+            </div>
+            <div class="timeline-step-item">
+              <h4>2. 데이터 감사 및 전처리</h4>
+              <p>20,000건 무결성 검증, 데이터 누수 변수(delay_minutes 등) 식별 및 입력 격리 처리</p>
+            </div>
+            <div class="timeline-step-item">
+              <h4>3. 탐색적 다차원 통계 분석 (EDA)</h4>
+              <p>권역, 주거, 기상, 시간대별 지연율과 표본 크기 신뢰도 검증 및 시계열 트렌드 확인</p>
+            </div>
+            <div class="timeline-step-item">
+              <h4>4. 시계열 분할 예측 모델링 & SHAP 분석</h4>
+              <p>4~5월 학습, 6월 검증 기반 4대 모델 비교 및 최적 분류 임계값 시뮬레이터 설계</p>
+            </div>
+            <div class="timeline-step-item">
+              <h4>5. 브라우저 실시간 대시보드 & 시뮬레이터 구현</h4>
+              <p>순수 웹 표준 기술을 통한 정적 포트폴리오 웹사이트 구축 및 모바일 반응형 완성</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Academic Limitations & Reflection -->
+        <div class="card">
+          <h3 style="font-size: 1.15rem; margin-bottom: 1.25rem;">⚠️ 분석의 한계와 주의사항</h3>
+
+          <div class="limitations-list">
+            <div class="limitation-item">
+              <strong>1. 표본 기간의 한정성 (3개월 표본)</strong>
+              2026년 2분기(4~6월) 데이터만 포함되어 있어 한겨울 혹한기 결빙이나 추석/설 명절의 특수 물량 패턴을 완전히 대변하지 못합니다.
+            </div>
+
+            <div class="limitation-item">
+              <strong>2. 실시간 교통 및 도로 정체 변수의 부재</strong>
+              주행 지연의 핵심 외생 변수인 실시간 도로 통행 속도, 사고/공사 정체 변수가 원본에 없어 거리와 시간대만으로 간접 추정했습니다.
+            </div>
+
+            <div class="limitation-item">
+              <strong>3. 관찰 데이터의 상관성과 인과성의 경계</strong>
+              도서산간이나 아파트의 높은 지연율은 관찰된 통계적 연관성일 뿐, 물리적 주행거리나 승강기 대기 시간 등의 교란 요인을 완전히 통제하지 못했습니다.
+            </div>
+
+            <div class="limitation-item">
+              <strong>4. AI 도구 활용 내역 및 인적 검증</strong>
+              데이터 시각화 코드 및 모델링 스크립트 작성 시 LLM 보조를 활용하였으며, 산출된 모든 수치와 데이터 누수 방지 로직은 사람이 직접 검증 및 수정했습니다.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer & Identity Section -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h3>라스트마일 배송 지연 분석 포트폴리오</h3>
+        <p>
+          배송 데이터 분석을 통해 현장의 병목을 발견하고, 경영학적 관점에서 지속 가능한 물류 최적화 대안을 설계하는 포트폴리오입니다.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>분석자 정보</h4>
+        <ul class="footer-links">
+          <li><strong>소속:</strong> 한림대학교 경영학과</li>
+          <li><strong>연구 분야:</strong> 물류 최적화 & 비즈니스 데이터 애널리틱스</li>
+          <li><strong>기술 스택:</strong> Python, Scikit-Learn, Pandas, JavaScript, HTML5/CSS3</li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>프로젝트 데이터 출처</h4>
+        <ul class="footer-links">
+          <li><strong>데이터셋:</strong> P2_lastmile_delivery (2).csv</li>
+          <li><strong>표본 규모:</strong> 20,000건 (2026 Q2 표본)</li>
+          <li><strong>라이선스:</strong> 학술 연구 및 포트폴리오 시연용</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 한림대학교 경영학과 라스트마일 물류 분석 프로젝트. All rights reserved.</div>
+      <div>개인정보보호 및 데이터 감사 지침을 준수하여 제작되었습니다.</div>
+    </div>
+  </footer>
+
+  <!-- Script Imports -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
